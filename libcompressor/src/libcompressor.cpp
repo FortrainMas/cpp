@@ -3,8 +3,21 @@
 
 #include "libcompressor/libcompressor.hpp"
 #include "zlib.h"
+#include "bzlib.h"
+
+libcompressor_Buffer zlib_compress(libcompressor_Buffer input);
+libcompressor_Buffer bzlib_compress(libcompressor_Buffer input);
+
 
 libcompressor_Buffer libcompressor_compress(libcompressor_CompressionAlgorithm algo, libcompressor_Buffer input) {
+    if(algo == libcompressor_Zlib){
+        return zlib_compress(input);
+    } else {
+        return bzlib_compress(input);
+    }
+}
+
+libcompressor_Buffer zlib_compress(libcompressor_Buffer input) {
     libcompressor_Buffer output;
     output.data = (char*)malloc(input.size + 1024);
     output.size = input.size + 1024;
@@ -43,3 +56,31 @@ libcompressor_Buffer libcompressor_compress(libcompressor_CompressionAlgorithm a
     return output;
 }
 
+libcompressor_Buffer bzlib_compress(libcompressor_Buffer input) {
+    libcompressor_Buffer output;
+    output.data = (char*)malloc(input.size + 1024);
+    output.size = input.size + 1024;
+
+    if (!output.data) { 
+        output.size = 0;
+        return output;
+    }
+
+    bz_stream stream;
+    memset(&stream, 0, sizeof(stream));
+    if(BZ2_bzCompressInit(&stream, 1, 0, 0) != BZ_OK) {
+        //TODO
+    }
+
+    stream.next_in = input.data;
+    stream.avail_in = input.size;
+    stream.next_out = output.data;
+    stream.avail_out = output.size;
+
+   
+    BZ2_bzCompress(&stream, BZ_FINISH);
+
+    output.size -= stream.avail_out;
+
+    return output;
+}
