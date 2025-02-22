@@ -10,6 +10,13 @@ libcompressor_Buffer bzlib_compress(libcompressor_Buffer input);
 
 
 libcompressor_Buffer libcompressor_compress(libcompressor_CompressionAlgorithm algo, libcompressor_Buffer input) {
+
+    if(input.size == 0) {
+        libcompressor_Buffer lb = {const_cast<char*>(""), 0};
+        return lb;
+    }
+
+
     if(algo == libcompressor_Zlib){
         return zlib_compress(input);
     } else {
@@ -32,7 +39,7 @@ libcompressor_Buffer zlib_compress(libcompressor_Buffer input) {
 
     if (deflateInit(&stream, Z_DEFAULT_COMPRESSION) != Z_OK) {
         free(output.data);
-		output.data = NULL;
+        output.data = NULL;
         output.size = 0;
         return output;
     }
@@ -45,7 +52,7 @@ libcompressor_Buffer zlib_compress(libcompressor_Buffer input) {
     if (deflate(&stream, Z_FINISH) != Z_STREAM_END) {
         deflateEnd(&stream);
         free(output.data);
-		output.data = NULL;
+        output.data = NULL;
         output.size = 0;
         return output;
     }
@@ -69,7 +76,11 @@ libcompressor_Buffer bzlib_compress(libcompressor_Buffer input) {
     bz_stream stream;
     memset(&stream, 0, sizeof(stream));
     if(BZ2_bzCompressInit(&stream, 1, 0, 0) != BZ_OK) {
-        //TODO
+        BZ2_bzDecompressEnd(&stream);
+        free(output.data);
+        output.data = NULL;
+        output.size = 0;
+        return output;
     }
 
     stream.next_in = input.data;
@@ -77,10 +88,17 @@ libcompressor_Buffer bzlib_compress(libcompressor_Buffer input) {
     stream.next_out = output.data;
     stream.avail_out = output.size;
 
-   
-    BZ2_bzCompress(&stream, BZ_FINISH);
+
+    if(BZ2_bzCompress(&stream, BZ_FINISH) != BZ_STREAM_END) {
+        BZ2_bzDecompressEnd(&stream);
+        free(output.data);
+        output.data = NULL;
+        output.size = 0;
+        return output;
+    }
 
     output.size -= stream.avail_out;
+    BZ2_bzDecompressEnd(&stream);
 
     return output;
 }

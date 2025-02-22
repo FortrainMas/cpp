@@ -5,16 +5,16 @@
 #include "libcompressor/libcompressor.hpp"
 
 int main(int argc, char ** argv){
-	libcompressor_CompressionAlgorithm algo = libcompressor_Bzip;
-	
-	libcompressor_Buffer input;
-    input.data = argv[1];
-    input.size = strlen(argv[1]);
+    libcompressor_CompressionAlgorithm algo = libcompressor_Bzip;
+    
+    libcompressor_Buffer input;
+    input.data = const_cast<char*>("test_string");
+    input.size = strlen(input.data);
+    
+    libcompressor_Buffer output = libcompressor_compress(algo, input);
+    
 
-	libcompressor_Buffer output = libcompressor_compress(algo, input);
-	
-
-	std::cout << "{";
+    std::cout << "{";
     for (size_t i = 0; i < output.size; ++i) {
         std::cout << "0x" << std::hex << (0xFF & static_cast<unsigned char>(output.data[i]));
         if (i != output.size - 1) {
@@ -23,5 +23,5 @@ int main(int argc, char ** argv){
     }
     std::cout << "}" << std::endl;
 
-	return 0;
+    return 0;
 }
