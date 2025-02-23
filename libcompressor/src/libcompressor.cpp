@@ -1,3 +1,11 @@
+/**
+ * @file libcompressor.cpp
+ * @brief Implementation of compression functions using zlib and bzlib.
+ * 
+ * This file contains the implementation of compression algorithms 
+ * using zlib and bzip2 for the libcompressor library.
+ */ 
+
 #include <stdlib.h>
 #include <cstring>
 
@@ -8,7 +16,12 @@
 libcompressor_Buffer zlib_compress(libcompressor_Buffer input);
 libcompressor_Buffer bzlib_compress(libcompressor_Buffer input);
 
-
+/**
+ * @brief Compresses the given buffer.
+ * @param algo algorithm to use in compression.
+ * @param input input libcompressor_buffer.
+ * @return Compressed libcomressor_buffer.
+ */
 libcompressor_Buffer libcompressor_compress(libcompressor_CompressionAlgorithm algo, libcompressor_Buffer input) {
 
     if(input.size == 0) {
@@ -24,6 +37,11 @@ libcompressor_Buffer libcompressor_compress(libcompressor_CompressionAlgorithm a
     }
 }
 
+/**
+ * @brief Compressed the buffer using zlib.
+ * @param input input buffer.
+ * @return Compressed libcompressor_buffer.
+ */
 libcompressor_Buffer zlib_compress(libcompressor_Buffer input) {
     libcompressor_Buffer output;
     output.data = (char*)malloc(input.size + 1024);
@@ -63,6 +81,11 @@ libcompressor_Buffer zlib_compress(libcompressor_Buffer input) {
     return output;
 }
 
+/**
+ * @brief Compressed the buffer using bzlib.
+ * @param input input buffer.
+ * @return Compressed libcompressor_buffer.
+ */
 libcompressor_Buffer bzlib_compress(libcompressor_Buffer input) {
     libcompressor_Buffer output;
     output.data = (char*)malloc(input.size + 1024);

@@ -1,3 +1,25 @@
+/**
+ * @file compressor.cpp
+ * @brief Command-line utility for compressing input strings using libcompressor.
+ *
+ * This program takes two arguments: 
+ *  1. Compression algorithm ("zlib" or "bzip").
+ *  2. Input string to be compressed.
+ *
+ * It compresses the input string using the specified algorithm and outputs 
+ * the compressed data in hexadecimal format to stdout. Errors are logged 
+ * using spdlog with level ERROR.
+ *
+ * ## Error Cases:
+ * - Insufficient arguments.
+ * - Invalid compression algorithm.
+ * - Compression failure (empty output buffer).
+ *
+ * In case of an error, an error message is logged, and the program exits with EXIT_FAILURE.
+ * On success, the program exits with EXIT_SUCCESS.
+ */
+
+
 #include <stdlib.h>
 #include <iostream>
 #include <string.h>
