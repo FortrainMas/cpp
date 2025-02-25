@@ -10,3 +10,6 @@ find_package(spdlog REQUIRED)
 
 target_link_libraries(compressor PRIVATE libcompressor)
 target_link_libraries(compressor PRIVATE spdlog::spdlog)
+
+
+install(TARGETS compressor RUNTIME DESTINATION ${CMAKE_INSTAL_BINDIR})

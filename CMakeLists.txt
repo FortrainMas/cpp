@@ -18,7 +18,7 @@ add_subdirectory(libcompressor)
 add_subdirectory(compressor)
 add_subdirectory(libcompressor/tests)
 
-
+include(GNUInstallDirs)
 
 find_package(Doxygen REQUIRED)
 
