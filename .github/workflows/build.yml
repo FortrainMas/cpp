@@ -14,6 +14,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y cmake g++ pip doxygen
+          sudo apt install -y cmake g++ pip doxygen clang clang-tools llvm clang-tidy-15 clang-format-15 libstdc++-12-dev
           pip install conan
 
       - name: Setup Conan
@@ -27,3 +28,11 @@ jobs:
 
       - name: Build Project
         run: cmake --build build
+
+      - name: Run Clang-Tidy
+        run: |
+          clang-tidy -p build $(find . -name '*.cpp') || true
+
+      - name: Run Clang-Format
+        run: |
+          run: find . -name '*.cpp' -o -name '*.h' | xargs clang-format --dry-run --Werror
