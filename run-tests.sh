@@ -1,0 +1,1 @@
+ctest --test-dir build --output-junit build/test_results.xml
