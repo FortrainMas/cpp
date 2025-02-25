@@ -45,6 +45,11 @@ jobs:
       - name: Run tests
         run: |
           ctest --test-dir build --output-on-failure --output-junit build/test_results.xml
+      
+      - name: Generate docs
+        run: |
+          cd build
+          cmake --build . --target doc
 
       - name: Publish test results
         uses: mikepenz/action-junit-report@v3
