@@ -25,10 +25,11 @@
 #include <string>
 
 #include "libcompressor/libcompressor.hpp"
+#include "spdlog/spdlog.h"
 
 int main(int argc, char** argv) {
   if (argc != 3) {
-    std::cerr << "Error: Insufficient arguments. Usage: compressor <algorithm> <input_string>" << std::endl;
+    spdlog::error("Error: Insufficient arguments. Usage: compressor <algorithm> <input_string>");
     return EXIT_FAILURE;
   }
 
@@ -40,7 +41,7 @@ int main(int argc, char** argv) {
   } else if (algorithm == "bzip") {
     algo = libcompressor_Bzip;
   } else {
-    std::cerr << "Error: Invalid compression algorithm. Use 'zlib' or 'bzip'." << std::endl;
+    spdlog::error("Error: Invalid compression algorithm. Use 'zlib' or 'bzip'.");
     return EXIT_FAILURE;
   }
 
@@ -52,7 +53,7 @@ int main(int argc, char** argv) {
   libcompressor_Buffer output = libcompressor_compress(algo, input);
 
   if (output.size == 0) {
-    std::cerr << "Error: Compression failed, output buffer is empty." << std::endl;
+    spdlog::error("Error: Compression failed, output buffer is empty.");
     return EXIT_FAILURE;
   }
 
