@@ -5,8 +5,7 @@
 #include "regex/parser.hpp"
 
 Regex::Regex(const std::string& str) {
-	std::shared_ptr<NFA> nfa = Parser(str).parse();
-	this->nfa_ = nfa;
+	nfa_ = Parser(str).parse();
 }
 
 bool Regex::match(const std::string &string) {

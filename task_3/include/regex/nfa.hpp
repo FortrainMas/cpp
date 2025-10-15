@@ -35,6 +35,11 @@ public:
     bool question_modifier_;
 };
 
+// namespace detail {
+// class NfaNodeImpl;
+// }
+// using NfaNode = const detail::NfaNodeImpl;
+
 class NFA {
 public:
     NFA();
