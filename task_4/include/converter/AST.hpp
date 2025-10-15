@@ -31,7 +31,7 @@ struct ASTNode {
                 for (const auto& [k, v] : av) {
                     auto it = bv.find(k);
                     if (it == bv.end()) return false;
-                    if (!v || !it->second) return false; // nullptr check
+                    if (!v || !it->second) return false;
                     if (!(*v == *it->second)) return false;
                 }
                 return true;
@@ -39,8 +39,8 @@ struct ASTNode {
                 const auto& bv = std::get<Array>(other.value);
                 if (av.size() != bv.size()) return false;
                 for (size_t i = 0; i < av.size(); ++i) {
-                    if (!av[i] || !bv[i]) return false;       // проверка на nullptr
-                    if (!(*av[i] == *bv[i])) return false;    // разыменовываем только av[i] и bv[i] один раз
+                    if (!av[i] || !bv[i]) return false;
+                    if (!(*av[i] == *bv[i])) return false;
                 }
                 return true;
             } else {
@@ -52,7 +52,7 @@ struct ASTNode {
 };
 
 inline bool operator==(const AST& a, const AST& b) {
-    if (!a && !b) return true;   // оба nullptr
-    if (!a || !b) return false;  // один nullptr
-    return *a == *b;             // безопасно разыменовываем
+    if (!a && !b) return true;
+    if (!a || !b) return false;
+    return *a == *b; 
 }

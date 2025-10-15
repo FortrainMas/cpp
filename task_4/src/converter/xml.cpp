@@ -56,14 +56,12 @@ AST XMLConverter::to_ast(const std::string& text) {
         if (self_closing)
             return {name, std::make_shared<ASTNode>(nullptr)};
 
-        // --- основная логика ---
         ASTNode::Object obj;
         std::string accumulated_text;
 
         while (true) {
             skip_ws(p);
 
-            // закрывающий тег
             if (*p == '<' && *(p + 1) == '/') {
                 p += 2;
                 std::string close_name = parse_tag_name(p);
@@ -76,13 +74,11 @@ AST XMLConverter::to_ast(const std::string& text) {
             }
 
             if (*p == '<') {
-                // если до этого был текст — сохраняем как value
                 if (!accumulated_text.empty()) {
                     obj["#text"] = std::make_shared<ASTNode>(accumulated_text);
                     accumulated_text.clear();
                 }
 
-                // дочерний узел
                 auto [child_name, child_node] = parse_node(p);
                 if (obj.count(child_name)) {
                     auto arr = std::get_if<ASTNode::Array>(&obj[child_name]->value);
@@ -93,16 +89,13 @@ AST XMLConverter::to_ast(const std::string& text) {
                     obj[child_name] = child_node;
                 }
             } else {
-                // текст внутри
                 accumulated_text += parse_text(p);
             }
         }
 
         if (!obj.empty()) {
-            // есть подэлементы — вернуть как объект
             return {name, std::make_shared<ASTNode>(obj)};
         } else {
-            // только текст — вернуть строку
             std::string trimmed = accumulated_text;
             trimmed.erase(trimmed.begin(), std::find_if(trimmed.begin(), trimmed.end(), [](unsigned char ch){ return !std::isspace(ch); }));
             trimmed.erase(std::find_if(trimmed.rbegin(), trimmed.rend(), [](unsigned char ch){ return !std::isspace(ch); }).base(), trimmed.end());
