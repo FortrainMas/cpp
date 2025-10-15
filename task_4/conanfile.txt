@@ -1,0 +1,10 @@
+[requires]
+gtest/1.14.0
+
+[options]
+gtest/*:build_gmock=True
+gtest/*:shared=False
+
+[generators]
+CMakeDeps
+CMakeToolchain

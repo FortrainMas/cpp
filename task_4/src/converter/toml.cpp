@@ -80,7 +80,7 @@ private:
     }
 
     static AST parse_array(const char*& p) {
-        ++p; // skip '['
+        ++p;
         ASTNode::Array arr;
         skip_ws(p);
         if (*p == ']') { ++p; return std::make_shared<ASTNode>(arr); }
@@ -98,7 +98,7 @@ private:
     }
 
     static AST parse_inline_object(const char*& p) {
-        ++p; // skip '{'
+        ++p;
         ASTNode::Object obj;
         skip_ws(p);
 
@@ -121,18 +121,15 @@ private:
         return std::make_shared<ASTNode>(std::move(obj));
     }
 
-    // ------------------- from_ast -------------------
     static void write_obj(std::ostringstream& out, const AST& node, const std::string& prefix) {
         std::visit([&](auto&& v) {
             using T = std::decay_t<decltype(v)>;
             if constexpr (std::is_same_v<T, ASTNode::Object>) {
-                // Сначала ключи-примитивы
                 for (const auto& [k, val] : v) {
                     if (!val) throw std::runtime_error("Null value in object");
                     if (!std::holds_alternative<ASTNode::Object>(val->value))
                         out << k << " = " << from_ast(val) << "\n";
                 }
-                // Потом вложенные объекты
                 for (const auto& [k, val] : v) {
                     if (!val) throw std::runtime_error("Null value in object");
                     if (std::holds_alternative<ASTNode::Object>(val->value)) {
@@ -186,7 +183,6 @@ private:
     }
 };
 
-// ------------------- to_ast -------------------
 AST TOMLConverter::to_ast(const std::string& text) {
     const char* p = text.c_str();
     ASTNode::Object root;
@@ -246,7 +242,6 @@ AST TOMLConverter::to_ast(const std::string& text) {
             target = &get_section(root, current_section);
         }
 
-        // вложенные ключи тоже могут быть с точкой
         const char* s = key.c_str();
         const char* start = s;
         ASTNode::Object* current = target;
@@ -276,7 +271,6 @@ AST TOMLConverter::to_ast(const std::string& text) {
 }
 
 
-// ------------------- from_ast -------------------
 std::string TOMLConverter::from_ast(const AST& ast) {
     std::ostringstream out;
     TOMLConverter::write_obj(out, ast, "");
