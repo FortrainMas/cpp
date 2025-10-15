@@ -14,6 +14,6 @@ int main(int arc, char** argv){
     std::string content = buffer.str(); 
 
     std::cout << "XML2TOML" << std::endl;
-    std::cout << Converter<TOMLConverter, JSONConverter>::convert(content) << std::endl;
+    std::cout << Converter<XMLConverter, JSONConverter>::convert(content) << std::endl;
     return 0;
 }

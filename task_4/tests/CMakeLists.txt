@@ -2,6 +2,7 @@ add_executable(tests
     test.cpp
     json.cpp
     toml.cpp
+    xml.cpp
 )
 
 target_link_libraries(tests
