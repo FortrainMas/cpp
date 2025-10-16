@@ -15,10 +15,6 @@
 #include "converter/AST.hpp"
 #include "converter/Converter.hpp"
 
-void XMLConverter::skip_ws(const char*& p) {
-    while (*p && std::isspace(static_cast<unsigned char>(*p))) ++p;
-}
-
 std::string XMLConverter::parse_tag_name(const char*& p) {
     const char* start = p;
     while (*p && (std::isalnum(static_cast<unsigned char>(*p)) || *p == '_' || *p == '-' || *p == '.'))
