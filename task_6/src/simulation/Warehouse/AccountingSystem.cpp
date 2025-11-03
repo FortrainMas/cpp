@@ -79,4 +79,5 @@ std::vector<int> AccountingSystem::getFreeStorageSlots(const Pallet& pallet) {
         }
     }
 
+    return result;
 }

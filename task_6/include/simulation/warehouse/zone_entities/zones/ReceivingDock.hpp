@@ -1,3 +1,5 @@
+#pragma once
+
 #include <optional>
 #include <atomic>
 
@@ -11,17 +13,17 @@ class ReceivingDockTerminal : public Terminal {
     public:
         using Terminal::Terminal;
         std::vector<int> getFreeSlots(const Pallet& pallet, int work_time) {
-            std::unique_lock<std::mutex> lock(mutex, std::defer_lock);
+            std::unique_lock<std::timed_mutex> lock(mutex, std::defer_lock);
             if (lock.try_lock_for(std::chrono::seconds(5))) {
                 std::this_thread::sleep_for(std::chrono::seconds(work_time));
-                return accounting_system.getFreeStorageSlots(pallet); 
+                return accounting_system.getFreeStorageSlots(pallet);
             } else {
                 return std::vector<int>();
             }
-        }
+        }   
 };
 
-class ReceivingDockTask : public Task {
+class ReceivingDockTask {
     private:
         int slot_number;
     public:

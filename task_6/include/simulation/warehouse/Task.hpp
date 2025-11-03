@@ -1,3 +1,7 @@
 #pragma once
 
-class Task {};
+#include <variant>
+
+#include "simulation/warehouse/zone_entities/zones/ReceivingDock.hpp"
+
+using Task = std::variant<ReceivingDockTask>;

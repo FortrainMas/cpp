@@ -6,7 +6,9 @@
 
 #include "simulation/warehouse/Task.hpp"
 #include "simulation/warehouse/basic_entities/Pallet.hpp"
-#include "simulation/warehouse/zone_entities/zones/StorageZone.hpp"
+#include "simulation/warehouse/zone_entities/zones/StorageZonePlaces.hpp"
+
+class StorageZonePlaces;
 
 class AccountingSystem {
     private:

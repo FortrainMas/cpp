@@ -1,32 +1,23 @@
+#pragma once
+
 #include <vector>
 #include <optional>
+#include <memory>
+#include <chrono>
 
-#include "simulation/warehouse/basic_entities/Pallet.hpp"
 #include "simulation/warehouse/AccountingSystem.hpp"
+#include "simulation/warehouse/zone_entities/Terminal.hpp"
+#include "simulation/warehouse/basic_entities/Pallet.hpp"
+#include "simulation/warehouse/zone_entities/zones/StorageZonePlaces.hpp"
 #include "utils/RandomGenerator.h"
 #include "utils/Logger.hpp"
-
-class StorageZonePlaces {
-    private:
-        std::vector<std::optional<Pallet>> places;
-    public:
-        StorageZonePlaces() : places() {
-            int racks = RandomGenerator::getRandom(10, 500);
-            Logger::log("Creating " + std::to_string(racks) + " racks in storage zone.");
-            for(int i = 0; i < racks * 10 * 6; i++) {
-                places.push_back(std::nullopt);
-            }
-            Logger::log("Storage zone created. With " + std::to_string(places.size()) + " places.");
-        }
-
-        std::vector<std::optional<Pallet>>& getPlaces() { return places; }
-};
 
 class StorageZoneTerminal : public Terminal {
     public:
         using Terminal::Terminal;
         void loadPallet(Pallet& pallet, std::vector<int> free_slots, int work_time) {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::unique_lock<std::timed_mutex> lock(mutex, std::defer_lock);
+            lock.lock();
             std::this_thread::sleep_for(std::chrono::seconds(work_time));
         }
         bool test_free(){
@@ -58,6 +49,7 @@ class StorageZone {
                     return terminals[i];
                 }
             }
+            return terminals[0];
         }
         
 };

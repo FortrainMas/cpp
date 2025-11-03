@@ -1,3 +1,5 @@
+#pragma once
+
 #include "simulation/warehouse/AccountingSystem.hpp"
 
 #include "simulation/warehouse/zone_entities/zones/StorageZone.hpp"

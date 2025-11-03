@@ -37,13 +37,14 @@ void Loader::run() {
         std::optional<Task> task = accounting_system.getTask();
         if (task.has_value()) {
             Logger::log("Loader has received a task.");
+            do_task(task.value());
         }
     }
 }
 
 template<typename T>
 void Loader::do_task(T& task) {
-    Logger::log("Unknown task type received.")
+    Logger::log("Unknown task type received.");
 }
 
 template<>
