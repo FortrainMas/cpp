@@ -15,9 +15,6 @@ class Loader {
         Warehouse& warehouse;
 
         void run();
-        template<typename T>
-        void do_task(T& task);
-        template<>
         void do_task(ReceivingDockTask& task);
 
     public:

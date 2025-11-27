@@ -21,7 +21,7 @@ int main() {
     Car car({Pallet(1, 4), Pallet(1, 5), Pallet(1, 3), Pallet(1, 4), Pallet(1, 5)});
     warehouse.getReceivingDock().acceptCar(car);
 
-    warehouse.getAccountingSystem().createTask(Task());
+    // warehouse.getAccountingSystem().createTask();
 
     std::this_thread::sleep_for(1200s);
 

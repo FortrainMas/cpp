@@ -8,7 +8,12 @@
 #include "utils/Logger.hpp"
 #include "utils/RandomGenerator.h"
 
-
+template<class... Ts>
+struct Overloaded : Ts... {
+    using Ts::operator()...;
+};
+template<class... Ts>
+Overloaded(Ts...) -> Overloaded<Ts...>;
 
 Loader::Loader(AccountingSystem& acc_sys, Warehouse& warehouse) : accounting_system(acc_sys),
                                             warehouse(warehouse),
@@ -37,17 +42,13 @@ void Loader::run() {
         std::optional<Task> task = accounting_system.getTask();
         if (task.has_value()) {
             Logger::log("Loader has received a task.");
-            do_task(task.value());
+            std::visit(Overloaded{
+                [&](ReceivingDockTask& task) { do_task(task); }
+            }, task.value());
         }
     }
 }
 
-template<typename T>
-void Loader::do_task(T& task) {
-    Logger::log("Unknown task type received.");
-}
-
-template<>
 void Loader::do_task(ReceivingDockTask& task) {
     Logger::log("Loader has received a ReceivingDockTask.");
 

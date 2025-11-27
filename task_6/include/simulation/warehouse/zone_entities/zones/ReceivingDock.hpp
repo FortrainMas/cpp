@@ -6,6 +6,7 @@
 #include "simulation/Warehouse/basic_entities/Car.hpp"
 #include "simulation/warehouse/AccountingSystem.hpp"
 #include "simulation/warehouse/zone_entities/Terminal.hpp"
+#include "simulation/warehouse/Task.hpp"
 #include "utils/RandomGenerator.h"
 #include "utils/Logger.hpp"
 
@@ -21,14 +22,6 @@ class ReceivingDockTerminal : public Terminal {
                 return std::vector<int>();
             }
         }   
-};
-
-class ReceivingDockTask {
-    private:
-        int slot_number;
-    public:
-        ReceivingDockTask(int slot_number) : slot_number(slot_number) {}
-        int getSlotNumber() { return slot_number; }
 };
 
 
