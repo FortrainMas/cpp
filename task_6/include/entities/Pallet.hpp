@@ -1,49 +1,22 @@
+#include <string>
 
-#include <stdexcept>
+class Pallet {
+    private:
+        int type;
+        int load;
+    public:
+        Pallet(int type, int load) : type(type), load(load) {};
+        int getType() const { return type; }
+        int getLoad() const { return load; }
+        int getMaxLoad();
+        void addLoad(int load);
+        void removeLoad(int load);
+};
 
-struct Pallet {
-private:
-    int type;
-    int load;
-    int max_load;
-
-public:
-    Pallet(int type, int load) {
-        this->type = type;
-        this->load = load;
-        
-        switch (type) {
-            case 1:
-                this->max_load = 100;
-                break;
-            case 2:
-                this->max_load = 200;
-                break;
-            case 3:
-                this->max_load = 300;
-                break;
-            default:
-                throw std::invalid_argument("Invalid pallet type");
-        }
-    }
-
-    int getType() const { return type; }
-    int getLoad() const { return load; }
-    int getMaxLoad() const { return max_load; }
-
-    void addLoad(int load) {
-        if (this->load + load <= this->max_load) {
-            this->load += load;
-        } else {
-            throw std::invalid_argument("Pallet is full");
-        }
-    }
-
-    void removeLoad(int load) {
-        if (this->load - load >= 0) {
-            this->load -= load;
-        } else {
-            throw std::invalid_argument("Pallet is empty");
-        }
-    }
+class PackedPallet : public Pallet {
+    private:
+        std::string destination;
+    public:
+        PackedPallet(int type, int load, std::string destination) : Pallet(type, load), destination(destination) {};
+        std::string getDestination() const { return destination; }
 };

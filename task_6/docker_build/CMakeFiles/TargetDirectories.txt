@@ -1,0 +1,7 @@
+/home/tasks/task_6/docker-build/CMakeFiles/edit_cache.dir
+/home/tasks/task_6/docker-build/CMakeFiles/rebuild_cache.dir
+/home/tasks/task_6/docker-build/src/CMakeFiles/utils.dir
+/home/tasks/task_6/docker-build/src/CMakeFiles/simulation.dir
+/home/tasks/task_6/docker-build/src/CMakeFiles/main.dir
+/home/tasks/task_6/docker-build/src/CMakeFiles/edit_cache.dir
+/home/tasks/task_6/docker-build/src/CMakeFiles/rebuild_cache.dir

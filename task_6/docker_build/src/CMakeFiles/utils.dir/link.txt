@@ -1,0 +1,2 @@
+/usr/bin/llvm-ar qc libutils.a CMakeFiles/utils.dir/utils/RandomGenerator.cpp.o
+/usr/bin/llvm-ranlib libutils.a

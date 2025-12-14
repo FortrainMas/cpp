@@ -1,30 +1,31 @@
 #include <vector>
-#include <semaphore>
+#include <memory>
 
 #include "entities/Pallet.hpp"
+#include "warehouse/ReceivingDock.hpp"
+
 
 class Car {
-private:
-    std::counting_semaphore<10> sem;
-    std::vector<Pallet> pallets;
-public: 
-    Car(vector<Pallet> &&pallets) {
-        sem = std::counting_semaphore<10>(10);
-        this->pallets = pallets;
-    }
+    private:
+        std::weak_ptr<Slot> slot;
+        std::shared_ptr<std::vector<std::shared_ptr<Pallet>>> pallets;
+    public:
+        Car(std::shared_ptr<std::vector<std::shared_ptr<Pallet>>> pallets) : pallets(pallets) {}
 
-    Pallet takePallet() {
-        sem.acquire();
-        Pallet pallet = this->pallets.back();
-        this->pallets.pop_back();
-        sem.release();
-        return pallet;
-    }
+        void setSlot(std::weak_ptr<Slot> slot) {
+            this->slot = slot;
+        }
 
-    Pallet putPallet(Pallet &&pallet) {
-        sem.acquire();
-        this->pallets.push_back(pallet);
-        sem.release();
-        return pallet;
-    }
+
+
+        struct PalletHandle {
+            int index;
+            std::shared_ptr<Pallet> pallet;
+        };
+
+        struct PalletHandle getPallet(int work_time);
+        void confirmGettingPallet(int index);
+        void rejectGettingPallet(int index, int work_time);
+
+
 };
