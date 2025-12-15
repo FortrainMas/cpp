@@ -1,37 +1,23 @@
 #include <memory>
-#include <mutex>
-
-#include "accounting_system/AccountingSystem.hpp"
-
-class StorageZoneTerminal {
-    private:
-        std::mutex mutex;
-    public:
-        StorageZoneTerminal() {}
-
-        void use const (int work_time) {
-            std::lock_guard<std::mutex> lock(mutex);
-
-        }
-
-        void get_unload const (std::unordered_map<int, int> const &shipping_plan) {
-
-        }
-};
+#include <thread>
+#include <chrono>
+#include <semaphore>
 
 
 class StorageZone {
-    private:
-        int num_terminals;
-        std::vector<std::shared_ptr<StorageZoneTerminal>> terminals;
-
-        std::weak_ptr<AccountingSystem> accounting_system;
-        std::vector<std::optional<std::shared_ptr<Pallet>>> pallets;
+private:
+    std::unique_ptr<std::counting_semaphore<>> sem;
     
-    public:
-        StorageZone(std::shared_ptr<AccountingSystem> acc_sys) : accounting_system(acc_sys) {}
+public:
+    StorageZone(int max_terminals) 
+        : sem(std::make_unique<std::counting_semaphore<>>(max_terminals)) {}
 
-        void relocate(std::unique_ptr<StorageZoneRelocation> relocation, int work_time);
-
-        std::weak_ptr<StorageZoneTerminal> getTerminal() {}
+    bool useTerminal(int work_time) { 
+        if(sem->try_acquire_for(std::chrono::seconds(5))) {
+            std::this_thread::sleep_for(std::chrono::seconds(work_time));
+            sem->release();
+            return true;
+        }
+        return false;
+    }
 };

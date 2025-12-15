@@ -4,45 +4,14 @@
 #include <vector>
 #include <memory>
 
-#include "entities/Pallet.hpp"
-#include "entities/Table.hpp"
-#include "entities/Car.hpp"
+
 #include "accounting_system/AccountingSystemConfig.hpp"
-#include "accounting_system/StorageZoneRelocation.hpp"
-#include "accounting_system/PackingZoneAccounting.hpp"
-
-class RecevingDockAccounting {
-    private:
-        int slots_number;
-        std::vector<std::optional<Car>> cars;
-
-    public:
-        RecevingDockAccounting(int slots_number) : slots_number(slots_number), cars(slots_number) {}
-
-        int getSlotsNumber() const { return slots_number; }
-};
-
-class StorageZoneAccounting {
-    private:
-        int pallet_slots_number;
-        std::vector<std::optional<Pallet>> pallets;
-
-    public:
-        StorageZoneAccounting(int pallet_slots_number) : pallet_slots_number(pallet_slots_number), pallets(pallet_slots_number) {};
-
-        std::unique_ptr<StorageZoneRelocation> getRelocation(Pallet pallet);    
-};
+#include "accounting_system/zones/ReceivingDockAccounting.hpp"
+#include "accounting_system/zones/StorageZoneAccounting.hpp"
+#include "accounting_system/zones/PackingZoneAccounting.hpp"
+#include "accounting_system/zones/ShippingZoneAccounting.hpp"
 
 
-
-class ShippingZoneAccounting {
-    private:
-        int slots_number;
-        std::vector<std::optional<Car>> cars;
-    
-    public:
-        ShippingZoneAccounting(int slots_number) : slots_number(slots_number), cars(slots_number) {}
-};
 
 
 class AccountingSystem {

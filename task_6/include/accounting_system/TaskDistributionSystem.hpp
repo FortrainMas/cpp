@@ -107,15 +107,23 @@ class PackingTask {
 
 class ShippingTask {
     private:
-        int table;
-        int pallet_type;
-        int 
+        std::weak_ptr<AccountingSystem> acc_sys;
     public:
-        void doTask(int work) {
-            // Task should be set by accounting system as often as actually needed 
-            // Checks for the current destinations available
-            // Checks for the current ShippingPallets available
-            // If there is no common destinataions, 
+        void doTask(int work_time, std::weak_ptr<AccountingSystem> acc_sys, std::weak_ptr<Warehouse> warehouse) {
+            auto packing_zone = acc_sys.lock()->getPackingZone().lock();
+            if (packing_zone == nullptr) return;
+
+            int reserved_table = packing_zone->reserveTable();
+            if (reserved_table == -1) return;
+
+            auto storage_zone = warehouse.lock()->getStorageZone().lock();
+            if (storage_zone == nullptr) return;
+            storage_zone->useTerminal(work_time);
+            auto storage_zone_accounting = acc_sys.lock()->getStorageZoneAccounting().lock();
+            auto pallet = storage_zone_accounting->getPallet()
+            std::cout << pallet;
+
+            
         }
 }
 
