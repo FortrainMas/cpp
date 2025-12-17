@@ -4,6 +4,10 @@
 #include "entities/Car.hpp"
 #include "entities/TypeLoads.hpp"
 
+#include "accounting_system/zones/PackingZoneAccounting.hpp"
+#include "accounting_system/zones/StorageZoneAccounting.hpp"
+#include "accounting_system/zones/ShippingZoneAccounting.hpp"
+
 class PackingTask : public Task {
     private:
         std::string destination;
@@ -31,16 +35,16 @@ class PackingTask : public Task {
                     table->put_pallet(pallet);
                     table->useTerminal(work_time);
                 }
-            
+
                 // AssemblePallets
                 needs = table->assemblePallet(work_time, needs, destination);
-                
+
                 // Ship palets
                 table->useTerminal(work_time);
                 std::shared_ptr<ShippingZoneAccounting> shipping_zone_accounting = acc_sys.lock()->getShippingZoneAccounting().lock();
                 std::shared_ptr<ShippingZone> shipping_zone = warehouse.lock()->getShippingZone().lock();
                 std::shared_ptr<std::set<std::string>> available_destinations = shipping_zone_accounting->getDestinations().lock();
-            
+
                 std::vector<std::shared_ptr<Pallet>> assembled_pallets = table->getAssembledPallets();
                 std::vector<int> removed_assembled_pallets;
                 for (int i = 0; i < assembled_pallets.size(); i++) {
@@ -50,20 +54,20 @@ class PackingTask : public Task {
                     if (shipping_slot == nullptr) continue;
                     std::shared_ptr<ShippingCar> shipping_car = shipping_slot->getCar().lock();
                     if (shipping_car == nullptr) continue;
-                
+
                     bool result = shipping_car->putPallet(work_time);
                     if (!result) continue;
                     removed_assembled_pallets.push_back(i);
-                    
+
                 }
                 table->removeAssembledPallet(removed_assembled_pallets);
                 removed_assembled_pallets.clear();
-                
-                
+
+
                 // Remove useless palets
                 std::shared_ptr<StorageZoneAccounting> storage_zone_accounting = acc_sys.lock()->getStorageZoneAccounting().lock();
                 std::shared_ptr<StorageZone> storage_zone = warehouse.lock()->getStorageZone().lock();
-                
+
                 std::vector<std::shared_ptr<Pallet>> disassemble_pallets = table->getDisassemblePallets();
                 for (int i = 0; i < disassemble_pallets.size(); i++) {
                     std::shared_ptr<Pallet> dis_pallet = disassemble_pallets[i];
@@ -78,6 +82,6 @@ class PackingTask : public Task {
                 }
                 table->removeDisassemblePallet(removed_assembled_pallets);
                 removed_assembled_pallets.clear();
-            } while (table->getFreePackingSlots() > 0);
+            } while (table->getFreePackingSlots() > 0 && (needs.type1_load > 0 || needs.type2_load > 0 || needs.type3_load > 0));
         }
 };

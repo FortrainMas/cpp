@@ -7,37 +7,37 @@
 
 #include "accounting_system/AccountingSystem.hpp"
 #include "warehouse/Warehouse.hpp"
+#include "accounting_system/tasks/TaskDistributionSystem.hpp"
 
 class Loader {
 private:
     const int work_time_;
-    std::atomic_bool running_{false};
-    std::thread thread_;
     std::weak_ptr<AccountingSystem> acc_sys_;
     std::weak_ptr<Warehouse> warehouse_;
+    std::atomic_bool running_{false};
+    std::thread thread_;
+    std::weak_ptr<TaskDistributionSystem> task_system_;
 
     void run() {
         while (running_) {
-            auto acc = acc_sys_.lock();
-            if (!acc) break;
-            
-            auto task = acc->getNextReceivingDockTask();
+            auto system = task_system_.lock();
+            if (!system) break;
+
+            auto fut = system->getTask();
+            auto task = fut.get();
             if (task) {
-                do_task(*task);
+                task->doTask(work_time_, acc_sys_, warehouse_);
+                std::this_thread::sleep_for(std::chrono::seconds(work_time_));
             } else {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
         }
     }
 
-
 public:
-    explicit Loader(std::shared_ptr<AccountingSystem> acc_sys, 
-                    std::shared_ptr<Warehouse> warehouse,
-                    int work_time = 5)
-        : work_time_(work_time)
-        , acc_sys_(acc_sys)
-        , warehouse_(warehouse) {}
+    explicit Loader(int work_time = 1, std::weak_ptr<AccountingSystem> acc_sys, std::weak_ptr<Warehouse> warehouse)
+        : task_system_(acc_sys.lock()->getTaskDistributionSystem().lock()), 
+            acc_sys_(acc_sys), warehouse_(warehouse), work_time_(work_time) {}
 
     void start() {
         if (!running_) {
@@ -48,9 +48,7 @@ public:
 
     void stop() {
         running_ = false;
-        if (thread_.joinable()) {
-            thread_.join();
-        }
+        if (thread_.joinable()) thread_.join();
     }
 
     ~Loader() {

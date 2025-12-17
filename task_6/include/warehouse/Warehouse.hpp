@@ -6,8 +6,10 @@
 #include "warehouse/StorageZone.hpp"
 
 #include "accounting_system/AccountingSystem.hpp"
+#include "accounting_system/zones/StorageZoneAccounting.hpp"
+#include "accounting_system/zones/PackingZoneAccounting.hpp"
 #include "warehouse/WarehouseConfig.hpp"
-
+#include "warehouse/StorageZone.hpp"
 
 class Warehouse {
     private:
@@ -33,4 +35,5 @@ class Warehouse {
         std::weak_ptr<StorageZone> getStorageZone() const { return storage_zone; }
         std::weak_ptr<PackingZone> getPackingZone() const { return packing_zone; }
         std::weak_ptr<ShippingZone> getShippingZone() const { return shipping_zone; }
+        std::weak_ptr<AccountingSystem> getAccountingSystem() const { return accounting_system; }
 };

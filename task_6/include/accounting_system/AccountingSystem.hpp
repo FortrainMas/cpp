@@ -4,15 +4,13 @@
 #include <vector>
 #include <memory>
 
-
 #include "accounting_system/AccountingSystemConfig.hpp"
-#include "accounting_system/zones/ReceivingDockAccounting.hpp"
-#include "accounting_system/zones/StorageZoneAccounting.hpp"
-#include "accounting_system/zones/PackingZoneAccounting.hpp"
-#include "accounting_system/zones/ShippingZoneAccounting.hpp"
 
-
-
+class TaskDistributionSystem;
+class PackingZoneAccounting;
+class StorageZoneAccounting;
+class RecevingDockAccounting;
+class ShippingZoneAccounting;
 
 class AccountingSystem {
     private:
@@ -20,6 +18,7 @@ class AccountingSystem {
         std::shared_ptr<StorageZoneAccounting> storage_zone_accounting;
         std::shared_ptr<PackingZoneAccounting> packing_zone_accounting;
         std::shared_ptr<ShippingZoneAccounting> shipping_zone_accounting;
+        std::shared_ptr<TaskDistributionSystem> task_distribution_system;
 
     public:
         AccountingSystem(const AccountingSystemConfig& config) : 
@@ -32,4 +31,5 @@ class AccountingSystem {
         std::weak_ptr<StorageZoneAccounting> getStorageZoneAccounting() const { return storage_zone_accounting; }
         std::weak_ptr<PackingZoneAccounting> getPackingZoneAccounting() const { return packing_zone_accounting; }
         std::weak_ptr<ShippingZoneAccounting> getShippingZoneAccounting() const { return shipping_zone_accounting; }
+        std::weak_ptr<TaskDistributionSystem> getTaskDistributionSystem() const { return task_distribution_system; }
 };
