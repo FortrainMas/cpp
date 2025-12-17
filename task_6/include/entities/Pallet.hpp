@@ -6,12 +6,16 @@ class Pallet {
         int type;
         int load;
         std::optional<std::string> destination;
+        bool ready;
     public:
         Pallet(int type, int load) : type(type), load(load) {};
         Pallet(int type, int load, std::string destination) : type(type), load(load), destination(destination) {};
         int getType() const { return type; }
         int getLoad() const { return load; }
         std::optional<std::string> getDestination() const { return destination; }
+        bool isReady() const { return ready; }
+        void setReady() { this->ready = true; }
+
         void addLoad(int load) {this->load += load;}
         void removeLoad(int load) {this->load -= load;}
         

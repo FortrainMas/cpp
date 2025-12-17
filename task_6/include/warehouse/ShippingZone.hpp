@@ -48,13 +48,14 @@ class ShippingZone : public std::enable_shared_from_this<ShippingZone>  {
     private:
         std::weak_ptr<AccountingSystem> acc_sys;
         std::vector<std::shared_ptr<ShippingSlot>> slots;
-        std::set<std::string> destinations;
+        std::shared_ptr<Destinations> destinations;
         
     public:
         ShippingZone(std::shared_ptr<AccountingSystem> acc_sys) : acc_sys(acc_sys) {
-            auto acc = acc_sys->getShippingZoneAccounting().lock();
+            std::shared_ptr<ShippingZoneAccounting> shipping_zone_accounting = acc_sys->getShippingZoneAccounting().lock();
             
-            int slots_count = acc->getSlotsNumber();
+            shipping_zone_accounting->registerDestination(destinations);
+            int slots_count = shipping_zone_accounting->getSlotsNumber();
             slots.reserve(slots_count);
             
             for (int i = 0; i < slots_count; ++i) {
@@ -67,20 +68,23 @@ class ShippingZone : public std::enable_shared_from_this<ShippingZone>  {
         }
 
         void releaseCar(const std::string& destination) {
-            destinations.erase(destination);
+            destinations->erase(destination);
         }
         
-        std::weak_ptr<ShippingSlot> getSlot(int slot) const { 
-            if (slot < 0 || slot >= static_cast<int>(slots.size())) 
-                return {};
-            return slots[slot]; 
+        std::weak_ptr<ShippingSlot> getSlot(std::string destination) const { 
+            for(auto slot : slots) {
+                if (slot->getCar().lock() != nullptr && slot->getCar().lock()->getDestination() == destination) {
+                    return slot;
+                }
+            }
+            return {};
         }
         
         int acceptCar(std::shared_ptr<ShippingCar> shippingCar) {
             for (int i = 0; i < static_cast<int>(slots.size()); i++) {
                 if (slots[i]->getCar().lock() == nullptr) {
                     slots[i]->acceptCar(shippingCar);
-                    destinations.insert(shippingCar->getDestination());
+                    destinations->insert(shippingCar->getDestination());
                     return i;
                 }
             }
