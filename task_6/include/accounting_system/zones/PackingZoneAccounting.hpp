@@ -17,7 +17,7 @@ public:
     PackingZoneAccounting(int num_tables) 
         : num_tables(num_tables), reserved_tables(num_tables, false) {}
 
-    int reserveTable() {
+    int reserveTable(int work_time) {
         std::unique_lock<std::mutex> lock(mutex);
         
         bool success = cv.wait_for(lock, std::chrono::seconds(5), [this] {
@@ -48,5 +48,9 @@ public:
             reserved_tables[table] = false;
             cv.notify_all(); 
         }
+    }
+
+    int getNumTables() const {
+        return num_tables;
     }
 };

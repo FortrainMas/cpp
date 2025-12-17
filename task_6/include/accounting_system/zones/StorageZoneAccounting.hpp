@@ -3,6 +3,7 @@
 #include <mutex>
 
 #include "entities/Pallet.hpp"
+#include "entities/TypeLoads.hpp"
 
 
 
@@ -64,5 +65,46 @@ class StorageZoneAccounting {
                 }
             }
             return nullptr;
+        }
+
+
+        std::shared_ptr<Pallet> getPallet(TypeLoads type_loads) {
+            int type_1 = type_loads.type1_load;
+            int type_2 = type_loads.type2_load;
+            int type_3 = type_loads.type3_load;
+
+            int bestfit_index = -1;
+            int bestfit_ratio = -1;
+
+            for(int i = 0; i < pallet_slots_number; i++){
+                if (pallets[i] == nullptr) continue;
+
+                if (pallets[i]->getType() == 1 && type_1 / pallets[i]->getLoad() > bestfit_ratio) {
+                    bestfit_ratio = type_1 / pallets[i]->getLoad();
+                    bestfit_index = i;
+                }
+
+                else if (pallets[i]->getType() == 2 && type_2 / pallets[i]->getLoad() > bestfit_ratio) {
+                    bestfit_ratio = type_2 / pallets[i]->getLoad();
+                    bestfit_index = i;
+                }
+
+                else if (pallets[i]->getType() == 3 && type_3 / pallets[i]->getLoad() > bestfit_ratio) {
+                    bestfit_ratio = type_3 / pallets[i]->getLoad();
+                    bestfit_index = i;
+                }
+            }
+            
+            if (bestfit_index != -1) {
+                auto tmp = pallets[bestfit_index];
+                pallets[bestfit_index] = nullptr;
+                return tmp;
+            }
+            return nullptr;
+        }
+
+
+        int getNumTerminals() const {
+            return terminals_number;
         }
 };

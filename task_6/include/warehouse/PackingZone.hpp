@@ -13,5 +13,9 @@ class PackingZone {
                 tables.push_back(std::make_shared<Table>(3, 3));
             }
         }
+
+        std::weak_ptr<Table> getTable(int table_id) {
+            return tables[table_id];
+        }
 };
 

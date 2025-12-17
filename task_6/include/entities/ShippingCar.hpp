@@ -2,7 +2,12 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+
+#ifdef __linux__
 #include <semaphore>
+#else
+#include <utils/semaphore.h>
+#endif
 
 #include <entities/Pallet.hpp>
 
