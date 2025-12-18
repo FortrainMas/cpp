@@ -1,3 +1,5 @@
+#pragma once
+
 #include "accounting_system/AccountingSystemConfig.hpp"
 
 class WarehouseConfig {

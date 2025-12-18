@@ -35,7 +35,7 @@ private:
     }
 
 public:
-    explicit Loader(int work_time = 1, std::weak_ptr<AccountingSystem> acc_sys, std::weak_ptr<Warehouse> warehouse)
+    explicit Loader(int work_time, std::weak_ptr<AccountingSystem> acc_sys, std::weak_ptr<Warehouse> warehouse)
         : task_system_(acc_sys.lock()->getTaskDistributionSystem().lock()), 
             acc_sys_(acc_sys), warehouse_(warehouse), work_time_(work_time) {}
 

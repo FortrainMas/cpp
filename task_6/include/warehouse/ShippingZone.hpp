@@ -1,3 +1,5 @@
+#pragma once
+
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -7,6 +9,7 @@
 #include <set>
 
 #include "accounting_system/AccountingSystem.hpp"
+#include "accounting_system/zones/ShippingZoneAccounting.hpp"
 #include "entities/ShippingCar.hpp"
 
 class ShippingCar;

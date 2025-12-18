@@ -1,3 +1,5 @@
+#pragma once
+
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -6,6 +8,7 @@
 #include <functional>
 
 #include "accounting_system/AccountingSystem.hpp"
+#include "accounting_system/zones/ReceivingDockAccounting.hpp"
 #include "entities/Car.hpp"
 
 class Pallet;

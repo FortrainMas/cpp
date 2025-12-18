@@ -1,3 +1,5 @@
+#pragma once
+
 class RecevingDockAccounting {
     private:
         int slots_number;

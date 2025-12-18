@@ -1,3 +1,5 @@
+#pragma once
+
 #include "accounting_system/tasks/Task.hpp"
 #include "accounting_system/AccountingSystem.hpp"
 #include "warehouse/Warehouse.hpp"

@@ -1,3 +1,5 @@
+#pragma once
+
 class AccountingSystemConfig {
     private:
         int receving_dock_slots_number;

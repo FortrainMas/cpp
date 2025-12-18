@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include <memory>
 #include <mutex>
@@ -5,20 +7,17 @@
 #include "entities/Pallet.hpp"
 #include "entities/TypeLoads.hpp"
 
-
-
-using PalletSlotsAccounting = std::vector<std::shared_ptr<Pallet>>;
 class StorageZoneAccounting {
     private:
         int terminals_number;
         int pallet_slots_number;
-        PalletSlotsAccounting pallets;
+        std::vector<std::shared_ptr<Pallet>> pallets;
         std::mutex mutex;
 
     public:
-        StorageZoneAccounting(int terminals_number,int pallet_slots_number) : 
-            terminals_number(terminals_number), 
-            pallet_slots_number(pallet_slots_number), 
+        StorageZoneAccounting(int pallet_slots_number, int terminals_number=5) :
+            terminals_number(terminals_number),
+            pallet_slots_number(pallet_slots_number),
             pallets(pallet_slots_number) {};
 
         void addPallet(std::shared_ptr<Pallet> pallet) {
@@ -40,7 +39,7 @@ class StorageZoneAccounting {
                     return;
                 }
             }
-        } 
+        }
 
         std::shared_ptr<Pallet> getPallet(int type, int load) {
             std::lock_guard<std::mutex> lock(mutex);
@@ -56,7 +55,7 @@ class StorageZoneAccounting {
                     max_present_load = std::max(max_present_load, pallets[i]->getLoad());
                 }
             }
-            
+
             for(int i = 0; i < pallet_slots_number; i++) {
                 if (pallets[i]->getType() == type && pallets[i]->getLoad() == max_present_load) {
                     auto tmp = pallets[i];
@@ -94,7 +93,7 @@ class StorageZoneAccounting {
                     bestfit_index = i;
                 }
             }
-            
+
             if (bestfit_index != -1) {
                 auto tmp = pallets[bestfit_index];
                 pallets[bestfit_index] = nullptr;

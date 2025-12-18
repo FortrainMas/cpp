@@ -1,3 +1,5 @@
+#pragma once
+
 struct TypeLoads {
     int type1_load;
     int type2_load;
