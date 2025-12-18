@@ -79,6 +79,7 @@ class Table {
             std::map<int, int> needs_map = {{1, needs.type1_load}, {2, needs.type2_load}, {3, needs.type3_load}};
 
             for (std::shared_ptr<Pallet> dis_pallet : disassemble_pallets) {
+                if (dis_pallet == nullptr) continue;
                 if (needs_map[dis_pallet->getType()] == 0) continue;
                 int moved_load = std::min(dis_pallet->getLoad(), needs_map[dis_pallet->getType()]);
                 std::shared_ptr<Pallet> asm_pallet = std::make_shared<Pallet>(

@@ -16,13 +16,13 @@
 class ShippingCar {
     private:
         std::counting_semaphore<3> sem{3};
-        int available_size = 100;
+        int available_size;
         std::function<void(const std::string&)> departure_callback;
         std::mutex mutex;
         std::string destination;
 
     public:
-        ShippingCar(std::string destination) : destination(destination) {}
+        ShippingCar(std::string destination, int available_size) : destination(destination), available_size(available_size) {}
 
         bool putPallet(int work_time) {
             sem.acquire();

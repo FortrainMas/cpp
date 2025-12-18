@@ -69,6 +69,7 @@ class StorageZoneAccounting {
 
 
         std::shared_ptr<Pallet> getPallet(TypeLoads type_loads) {
+            std::lock_guard<std::mutex> lock(mutex);
             int type_1 = type_loads.type1_load;
             int type_2 = type_loads.type2_load;
             int type_3 = type_loads.type3_load;
@@ -109,6 +110,7 @@ class StorageZoneAccounting {
         }
 
         void logState() {
+            std::lock_guard<std::mutex> lock(mutex);
             std::string log_message = "Current state of the storage zone: \n";
             for(auto pallet : pallets) {
                 if (pallet != nullptr) {

@@ -33,6 +33,7 @@ class PackingTask : public Task {
             std::shared_ptr<Table> table = warehouse.lock()->getPackingZone().lock()->getTable(table_number).lock();
             
 
+            bool no_way_flag = false;
             do {
                 // Check free space and use it
                 int free_slots = table->getFreeSlots();
@@ -46,6 +47,19 @@ class PackingTask : public Task {
                     table->useTerminal(work_time);
                     Logger::log("Moved pallet to the table " + std::to_string(table_number));
                 }
+                storage_zone_accounting->logState();
+
+                no_way_flag = true;
+                std::map<int, int> needs_map_l = {{1, needs.type1_load}, {2, needs.type2_load}, {3, needs.type3_load}};
+                for (auto pallet : table->getDisassemblePallets()) {
+                    if ((pallet != nullptr) && (pallet->getLoad() > 0) && (needs_map_l[pallet->getType()] > 0)) {
+                        no_way_flag = false;
+                        break;
+                    }
+                }
+                if (no_way_flag) {
+                    break;
+                }
 
                 // AssemblePallets
                 needs = table->assemblePallet(work_time, needs, destination);
@@ -56,7 +70,7 @@ class PackingTask : public Task {
                 table->useTerminal(work_time);
                 std::shared_ptr<ShippingZoneAccounting> shipping_zone_accounting = acc_sys.lock()->getShippingZoneAccounting().lock();
                 std::shared_ptr<ShippingZone> shipping_zone = warehouse.lock()->getShippingZone().lock();
-                std::shared_ptr<std::set<std::string>> available_destinations = shipping_zone_accounting->getDestinations().lock();
+                std::shared_ptr<std::set<std::string>> available_destinations = shipping_zone->getDestinations();
 
                 std::vector<std::shared_ptr<Pallet>> assembled_pallets = table->getAssembledPallets();
                 std::vector<int> removed_assembled_pallets;
@@ -68,6 +82,7 @@ class PackingTask : public Task {
                     std::shared_ptr<ShippingCar> shipping_car = shipping_slot->getCar().lock();
                     if (shipping_car == nullptr) continue;
 
+                    Logger::log("Po ulanskomu ya begu");
                     bool result = shipping_car->putPallet(work_time);
                     if (!result) continue;
                     removed_assembled_pallets.push_back(i);
@@ -75,7 +90,8 @@ class PackingTask : public Task {
                 }
                 table->removeAssembledPallet(removed_assembled_pallets);
                 removed_assembled_pallets.clear();
-
+                
+                Logger::log("Even tries to ship something");
 
                 // Remove useless palets
                 std::vector<std::shared_ptr<Pallet>> disassemble_pallets = table->getDisassemblePallets();
@@ -93,5 +109,12 @@ class PackingTask : public Task {
                 table->removeDisassemblePallet(removed_assembled_pallets);
                 removed_assembled_pallets.clear();
             } while (table->getFreePackingSlots() > 0 && (needs.type1_load > 0 || needs.type2_load > 0 || needs.type3_load > 0));
+
+            if (needs.type1_load > 0 || needs.type2_load > 0 || needs.type3_load > 0) {
+                Logger::log("There is no way to pack" + std::to_string(needs.type1_load) + ", " + std::to_string(needs.type2_load) + ", " + std::to_string(needs.type3_load));
+                acc_sys.lock()->getTaskDistributionSystem().lock()->addTask(std::make_shared<PackingTask>(destination, needs));
+            }
+
+            packing_zone_accounting->releaseTable(table_number);
         }
 };

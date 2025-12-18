@@ -29,6 +29,9 @@ int main(){
     loader_2->start();
 
 
+
+    // std::shared_ptr<Manager> manager = std::make_shared<Manager>(accounting_system, warehouse, tds);
+
     std::shared_ptr<TaskDistributionSystem> tds = accounting_system->getTaskDistributionSystem().lock();
     Logger::log("Continue simulation");   
 
@@ -37,6 +40,11 @@ int main(){
             std::make_shared<Pallet>(3, 4),
             std::make_shared<Pallet>(3, 4),
             std::make_shared<Pallet>(3, 4),
+            std::make_shared<Pallet>(2, 100),
+            std::make_shared<Pallet>(2, 100),
+            std::make_shared<Pallet>(2, 100),
+            std::make_shared<Pallet>(2, 100),
+            std::make_shared<Pallet>(1, 100),
         }
     );
 
@@ -46,11 +54,11 @@ int main(){
     tds->addTask(std::make_shared<UnloadTask>(slot), 2);
 
 
-    auto shippingCar = std::make_shared<ShippingCar>("Moscow");
+    auto shippingCar = std::make_shared<ShippingCar>("Moscow", 1);
     Logger::log("Shipping car created");
     slot = warehouse->getShippingZone().lock()->acceptCar(shippingCar);
     Logger::log("Shipping car is accepted by slot " + std::to_string(slot));
-    // tds->addTask(std::make_shared<PackingTask>("Moscow", TypeLoads(0, 2, 3)), 2);
+    tds->addTask(std::make_shared<PackingTask>("Moscow", TypeLoads(0, 2, 3)), 2);
 
     char c;
     while (std::cin >> c) {
