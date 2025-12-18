@@ -8,6 +8,7 @@
 #include "accounting_system/AccountingSystem.hpp"
 #include "warehouse/Warehouse.hpp"
 #include "accounting_system/tasks/TaskDistributionSystem.hpp"
+#include "utils/Logger.hpp"
 
 class Loader {
 private:
@@ -26,9 +27,10 @@ private:
             auto fut = system->getTask();
             auto task = fut.get();
             if (task) {
+                Logger::log("Trynna work");
                 task->doTask(work_time_, acc_sys_, warehouse_);
-                std::this_thread::sleep_for(std::chrono::seconds(work_time_));
             } else {
+                Logger::log("Sleeping. Zzzz...");
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
         }

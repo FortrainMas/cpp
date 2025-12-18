@@ -25,7 +25,8 @@ class AccountingSystem {
             receiving_dock_accounting(std::make_shared<RecevingDockAccounting>(config.getRecevingDockSlotsNumber())), 
             storage_zone_accounting(std::make_shared<StorageZoneAccounting>(config.getStorageZonePalletSlotsNumber())),
             packing_zone_accounting(std::make_shared<PackingZoneAccounting>(config.getPackingZoneNumTables())),
-            shipping_zone_accounting(std::make_shared<ShippingZoneAccounting>(config.getShippingZoneSlotsNumber())) {}
+            shipping_zone_accounting(std::make_shared<ShippingZoneAccounting>(config.getShippingZoneSlotsNumber())),
+            task_distribution_system(std::make_shared<TaskDistributionSystem>()) {}
         
         std::weak_ptr<RecevingDockAccounting> getReceivingDockAccounting() const { return receiving_dock_accounting; }
         std::weak_ptr<StorageZoneAccounting> getStorageZoneAccounting() const { return storage_zone_accounting; }

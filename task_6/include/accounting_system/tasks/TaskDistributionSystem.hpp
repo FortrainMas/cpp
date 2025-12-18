@@ -6,6 +6,7 @@
 #include <queue>
 
 #include "accounting_system/tasks/Task.hpp"
+#include "utils/Logger.hpp"
 
 class TaskDistributionSystem {
 private:
@@ -14,14 +15,17 @@ private:
     std::queue<std::promise<std::shared_ptr<Task>>> waiting_promises;
 
 public:
-    void addTask(std::shared_ptr<Task> task) {
+    void addTask(std::shared_ptr<Task> task, int num_workers=1) {
         std::lock_guard<std::mutex> lock(mutex_);
-        if (!waiting_promises.empty()) {
-            auto prom = std::move(waiting_promises.front());
-            waiting_promises.pop();
-            prom.set_value(task); 
-        } else {
-            available_tasks.push(task);
+
+        for (int i = 0; i < num_workers; ++i) {
+            if (!waiting_promises.empty()) {
+                auto prom = std::move(waiting_promises.front());
+                waiting_promises.pop();
+                prom.set_value(task);
+            } else {
+                available_tasks.push(task);
+            }
         }
     }
 

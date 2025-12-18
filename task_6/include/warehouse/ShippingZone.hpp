@@ -11,6 +11,7 @@
 #include "accounting_system/AccountingSystem.hpp"
 #include "accounting_system/zones/ShippingZoneAccounting.hpp"
 #include "entities/ShippingCar.hpp"
+#include "utils/Logger.hpp"
 
 class ShippingCar;
 class Pallet;
@@ -42,8 +43,11 @@ class ShippingSlot : public std::enable_shared_from_this<ShippingSlot> {
 
         std::weak_ptr<ShippingCar> getCar() const { return shippingCar; }
         void acceptCar(std::shared_ptr<ShippingCar> shippingCar) {
+            Logger::log("New car added to the slot");
             shippingCar->registerCallback(getReleaseCallback());
+            Logger::log("FUCK CALLBACk");
             this->shippingCar = std::move(shippingCar);
+            Logger::log("It's all cool");
         }
 };
 
@@ -84,6 +88,7 @@ class ShippingZone : public std::enable_shared_from_this<ShippingZone>  {
         }
         
         int acceptCar(std::shared_ptr<ShippingCar> shippingCar) {
+            Logger::log("Accepting car on slot");
             for (int i = 0; i < static_cast<int>(slots.size()); i++) {
                 if (slots[i]->getCar().lock() == nullptr) {
                     slots[i]->acceptCar(shippingCar);

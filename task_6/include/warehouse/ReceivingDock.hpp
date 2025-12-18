@@ -10,6 +10,7 @@
 #include "accounting_system/AccountingSystem.hpp"
 #include "accounting_system/zones/ReceivingDockAccounting.hpp"
 #include "entities/Car.hpp"
+#include "utils/Logger.hpp"
 
 class Pallet;
 
@@ -34,6 +35,7 @@ class Slot : public std::enable_shared_from_this<Slot> {
         }
     
         void releaseCar() {
+            Logger::log("Car from slot was released");
             car.reset();
         }
         
@@ -48,6 +50,7 @@ class Slot : public std::enable_shared_from_this<Slot> {
 
         std::weak_ptr<Car> getCar() const { return car; }
         void acceptCar(std::shared_ptr<Car> car) {
+            Logger::log("New car added to the slot");
             car->registerCallback(getReleaseCallback());
             this->car = std::move(car);
         }
@@ -83,5 +86,6 @@ class ReceivingDock {
                     return i;
                 }
             }
+            return -1;
         }
 };

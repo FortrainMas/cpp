@@ -6,6 +6,7 @@
 
 #include "entities/Pallet.hpp"
 #include "entities/TypeLoads.hpp"
+#include "utils/Logger.hpp"
 
 class StorageZoneAccounting {
     private:
@@ -105,5 +106,15 @@ class StorageZoneAccounting {
 
         int getNumTerminals() const {
             return terminals_number;
+        }
+
+        void logState() {
+            std::string log_message = "Current state of the storage zone: \n";
+            for(auto pallet : pallets) {
+                if (pallet != nullptr) {
+                    log_message.append("Pallet type: " + std::to_string(pallet->getType()) + ", load: " + std::to_string(pallet->getLoad()) + "\n");
+                }
+            }
+            Logger::log(log_message);
         }
 };
