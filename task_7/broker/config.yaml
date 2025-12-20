@@ -1,0 +1,10 @@
+queues:
+  - name: orders
+    type: fifo
+    durability: memory
+    ttl: 60
+
+  - name: metrics
+    type: random
+    durability: memory
+    ttl: 5

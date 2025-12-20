@@ -1,0 +1,13 @@
+[requires]
+zeromq/4.3.5
+nlohmann_json/3.11.3
+cppzmq/4.10.0
+yaml-cpp/0.8.0
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[layout]
+cmake_layout
+
