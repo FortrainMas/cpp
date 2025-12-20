@@ -49,7 +49,7 @@ public:
                 auto msg_copy = std::move(*it);
                 auto msg_it = it++;
                 queue.erase(msg_it);
-                queue.push_back(std::move(msg_copy));
+                queue.push_front(std::move(msg_copy));
                         
                 for (auto& [client, pos] : client_position) {
                     if (pos == msg_it) {

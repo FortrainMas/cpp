@@ -88,11 +88,15 @@ class MQServer {
                         continue;
                     }
 
-                    if (acc != "NO_ACK") {
+                    if (acc == "NO_ACK") {
                         clients_[{identity, queue_name}] = Client(identity, ClientQoS::NO_ACK);
                         broker_.getQueue(queue_name)->registerSubscriber(clients_[{identity, queue_name}]);
                     }
                     else {
+                        std::string ttl(
+                            static_cast<char*>(msg[5].data()),
+                            msg[5].size()
+                        );
                         clients_[{identity, queue_name}] = Client(identity, ClientQoS::ACK);
                         broker_.getQueue(queue_name)->registerSubscriber(clients_[{identity, queue_name}]);
                     }
@@ -137,7 +141,7 @@ class MQServer {
                     bool result = broker_.getQueue(queue)->addMessage(Message(identity, payload));
 
                     if(ack == "ACK") {
-                        response(router, identity, "NO SUCH QUEUE");
+                        response(router, identity, "OK");
                     }
                 }
 
@@ -207,10 +211,11 @@ class MQServer {
 
                     Client client = clients_[{identity, queue}];
                     broker_.getQueue(queue)->ackMessage(client, id);
+                    Logger::log("In queue " + queue + " acked message with id " + id);
 
                     j["status"] = "200";
                     j["id"] = id;
-                    j["payload"] = "";
+                    j["payload"] = "OK";
                     response(router, identity, j.dump());
                 }
             }

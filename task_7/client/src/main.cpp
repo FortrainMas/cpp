@@ -32,9 +32,10 @@ int main() {
         client.queueSend("orders", SendQoS::ACK, "Hello" + std::to_string(i));
     }
 
-    client.queueRegister("metrics", QoS::ACK);
+    client.queueRegister("metrics", QoS::ACK, 10);
     for (int i = 0; i < 5; ++i) {
         client.queueSend("metrics", SendQoS::ACK, "Hello" + std::to_string(i));
+        std::cout << "RIGHT NOW" << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     for (int i = 0; i < 5; i++) {

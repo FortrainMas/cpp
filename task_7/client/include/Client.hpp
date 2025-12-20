@@ -68,8 +68,13 @@ class DealerClient {
             sock_.connect(endpoint);
         }
 
-        std::vector<std::string> queueRegister(std::string queue_name, QoS qos) {
-            send({"REGISTER", queue_name, qos == QoS::ACK ? "ACK" : "NO_ACK"});
+        std::vector<std::string> queueRegister(std::string queue_name, QoS qos, int ttl=-1) {
+            if (qos == QoS::ACK) {
+                send({"REGISTER", queue_name, "ACK", std::to_string(ttl)});
+            }
+            else {
+                send({"REGISTER", queue_name, "NO_ACK"});
+            }
             std::vector<std::string> response = recv();
             for(int i = 0; i < response.size(); i++){
                 std::cout << response[i] << "\n";
@@ -101,7 +106,7 @@ class DealerClient {
             }
 
             json j = json::parse(resp);
-            if (j["status"].get<std::string>() != "200") {
+            if (j["status"].get<std::string>() == "200") {
                 return Message(j["id"].get<std::string>(), j["payload"].get<std::string>());
             }
 
