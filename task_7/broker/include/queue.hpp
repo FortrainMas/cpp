@@ -8,6 +8,7 @@
 #include "backend/backend.hpp"
 #include "backend/memoryRandomBackend.hpp"
 #include "backend/memoryFIFOBackend.hpp"
+#include "backend/diskFIFOBackend.hpp"
 
 #include "utils/Logger.hpp"
 
@@ -45,8 +46,12 @@ class Queue {
                 if (durability_ == QueueDurability::MEMORY) {
                     if (type_ == QueueType::RANDOM) backend = std::make_shared<MemoryRandomBackend>(message_ttl);
                     else backend = std::make_shared<MemoryFIFOBackend>(message_ttl);
+                } else {
+                    #include <filesystem>
+                    namespace fs = std::filesystem;
+                    fs::path cwd = fs::current_path();
+                    backend = std::make_shared<DiskFIFOBackend>(cwd, message_ttl);
                 }
-                else backend = nullptr;
 
                 
                 if (backend == nullptr) {
@@ -77,4 +82,3 @@ class Queue {
             backend->ackMessage(client, id);
         }
 };
-

@@ -6,5 +6,5 @@ queues:
 
   - name: metrics
     type: random
-    durability: memory
+    durability: disk
     ttl: 5

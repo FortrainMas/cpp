@@ -43,6 +43,7 @@ class Message {
         std::string getPayload() const { return payload_; }
         std::chrono::time_point<std::chrono::system_clock> getTimestamp() const { return timestamp_; }
         std::optional<std::chrono::time_point<std::chrono::system_clock>> getAckTimestamp() const { return ack_timestamp_; }
+        void setTimestamp(std::chrono::time_point<std::chrono::system_clock> timestamp) { timestamp_ = timestamp; }
 
         bool operator==(const Message& other) const { return id_ == other.getId(); }
 };
